@@ -17,29 +17,22 @@ public class DashboardView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main panel with padding and layout adjustments
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        panel.setBackground(new Color(230, 240, 255)); // Consistent background color
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 1));
 
-        // Styling for buttons
-        registerItemButton = styledButton("Register Item", new Color(70, 130, 180));
-        listItemsButton = styledButton("List Items", new Color(70, 130, 180));
-        placeBidButton = styledButton("Place Bid", new Color(70, 130, 180));
-        viewAuctionStatusButton = styledButton("View Auction Status", new Color(70, 130, 180));
-        logoutButton = styledButton("Logout", new Color(230, 140, 140));
+        registerItemButton = new JButton("Register Item");
+        listItemsButton = new JButton("List Items");
+        placeBidButton = new JButton("Place Bid");
+        viewAuctionStatusButton = new JButton("View Auction Status");
+        logoutButton = new JButton("Logout");
 
-        // Adding action listeners
         registerItemButton.addActionListener(new DashboardButtonListener());
         listItemsButton.addActionListener(new DashboardButtonListener());
         placeBidButton.addActionListener(new DashboardButtonListener());
         viewAuctionStatusButton.addActionListener(new DashboardButtonListener());
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LoginView().setVisible(true);
-                dispose();
-            }
+        logoutButton.addActionListener(e -> {
+            new LoginView().setVisible(true);
+            dispose();
         });
 
         panel.add(registerItemButton);
@@ -49,14 +42,6 @@ public class DashboardView extends JFrame {
         panel.add(logoutButton);
 
         add(panel);
-    }
-
-    private JButton styledButton(String text, Color bgColor) {
-        JButton button = new JButton(text);
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        return button;
     }
 
     private class DashboardButtonListener implements ActionListener {
