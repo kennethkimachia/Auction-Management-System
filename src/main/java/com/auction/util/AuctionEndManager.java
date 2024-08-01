@@ -1,25 +1,33 @@
-// src/main/java/com/auction/util/AuctionEndManager.java
+
 package main.java.com.auction.util;
 
-import main.java.com.auction.model.*;
+import main.java.com.auction.controller.BidController;
+import main.java.com.auction.controller.ItemController;
+import main.java.com.auction.controller.NotificationController;
+import main.java.com.auction.controller.UserController;
+import main.java.com.auction.model.Bid;
+import main.java.com.auction.model.Item;
+import main.java.com.auction.model.Notification;
+import main.java.com.auction.model.User;
 
 import javax.swing.*;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class AuctionEndManager {
     private Timer timer;
-    private ItemDAO itemDAO;
-    private BidDAO bidDAO;
-    private NotificationDAO notificationDAO;
+    private ItemController itemController;
+    private BidController bidController;
+    private NotificationController notificationController;
+    private UserController userController;
 
     public AuctionEndManager() {
         timer = new Timer(true);
-        itemDAO = new ItemDAO();
-        bidDAO = new BidDAO();
-        notificationDAO = new NotificationDAO();
+        itemController = new ItemController();
+        bidController = new BidController();
+        notificationController = new NotificationController();
+        userController = new UserController();
     }
 
     public void scheduleAuctionEnd(Item item) {
@@ -37,9 +45,9 @@ public class AuctionEndManager {
         @Override
         public void run() {
             item.setAuctionStatus("Closed");
-            itemDAO.updateItem(item);
+            itemController.updateItem(item);
 
-            List<Bid> bids = bidDAO.getBidsByItemId(item.getId());
+            List<Bid> bids = bidController.getBidsByItemId(item.getId());
             if (!bids.isEmpty()) {
                 Bid highestBid = bids.get(bids.size() - 1);
                 notifyWinner(highestBid);
@@ -47,17 +55,14 @@ public class AuctionEndManager {
         }
 
         private void notifyWinner(Bid highestBid) {
-            // Notify the winner of the auction
-            System.out.println("Notification: User " + highestBid.getBidderName() + " has won the auction for item " + highestBid.getItemId() + " with a bid of $" + highestBid.getBidAmount());
-            JOptionPane.showMessageDialog(null, "User " + highestBid.getBidderName() + " has won the auction for item " + highestBid.getItemId() + " with a bid of $" + highestBid.getBidAmount(), "Auction Ended", JOptionPane.INFORMATION_MESSAGE);
-
-            // Add notification to the database
-            UserDAO userDAO = new UserDAO();
-            User winner = userDAO.getUserByUsername(highestBid.getBidderName());
+            User winner = userController.getUserByUsername(highestBid.getBidderName());
             if (winner != null) {
                 String message = "You have won the auction for item \"" + item.getName() + "\" with a bid of $" + highestBid.getBidAmount();
                 Notification notification = new Notification(winner.getId(), message);
-                notificationDAO.addNotification(notification);
+                notificationController.addNotification(notification);
+
+                // Optionally, send an email notification
+                // EmailUtil.sendEmail(winner.getUsername(), "Auction Won", message);
             }
         }
     }

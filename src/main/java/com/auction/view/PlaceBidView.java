@@ -1,8 +1,7 @@
-// src/main/java/com/auction/view/PlaceBidView.java
 package main.java.com.auction.view;
 
+import main.java.com.auction.controller.PlaceBidController;
 import main.java.com.auction.model.Bid;
-import main.java.com.auction.model.BidDAO;
 import main.java.com.auction.model.User;
 
 import javax.swing.*;
@@ -11,30 +10,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PlaceBidView extends JFrame {
-    private JTextField itemIdField;
-    private JTextField bidderNameField;
+    private User user;
+    private int itemId;
     private JTextField bidAmountField;
     private JButton placeBidButton;
     private JButton backButton;
-    private User user;
+    private PlaceBidController placeBidController;
 
-    public PlaceBidView(User user) {
+    public PlaceBidView(User user, int itemId) {
         this.user = user;
+        this.itemId = itemId;
+        this.placeBidController = new PlaceBidController();
+        initializeUI();
+    }
+
+    private void initializeUI() {
         setTitle("Place Bid");
-        setSize(400, 300);
+        setSize(300, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
-
-        panel.add(new JLabel("Item ID:"));
-        itemIdField = new JTextField();
-        panel.add(itemIdField);
-
-        panel.add(new JLabel("Bidder Name:"));
-        bidderNameField = new JTextField();
-        panel.add(bidderNameField);
+        panel.setLayout(new GridLayout(3, 2));
 
         panel.add(new JLabel("Bid Amount:"));
         bidAmountField = new JTextField();
@@ -57,28 +54,23 @@ public class PlaceBidView extends JFrame {
     private class PlaceBidButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int itemId = Integer.parseInt(itemIdField.getText());
-            String bidderName = bidderNameField.getText();
-            double bidAmount = Double.parseDouble(bidAmountField.getText());
+            String bidAmountText = bidAmountField.getText().replaceAll("[^\\d.]", "");
+            double bidAmount = Double.parseDouble(bidAmountText);
+            Bid bid = new Bid(itemId, user.getUsername(), bidAmount);
 
-            BidDAO bidDAO = new BidDAO();
-            double highestBid = bidDAO.getHighestBid(itemId);
-
-            if (bidAmount > highestBid) {
-                Bid bid = new Bid(itemId, bidderName, bidAmount);
-                if (bidDAO.placeBid(bid)) {
-                    JOptionPane.showMessageDialog(PlaceBidView.this, "Bid placed successfully!");
-                    notifyUser("You have placed a bid of $" + bidAmount + " on item " + itemId);
-                } else {
-                    JOptionPane.showMessageDialog(PlaceBidView.this, "Failed to place bid.");
-                }
+            if (placeBidController.placeBid(bid)) {
+                JOptionPane.showMessageDialog(PlaceBidView.this, "Bid placed successfully!");
+                new DashboardView(user).setVisible(true);
+                dispose();
             } else {
-                JOptionPane.showMessageDialog(PlaceBidView.this, "Bid amount must be higher than the current highest bid.");
+                JOptionPane.showMessageDialog(PlaceBidView.this, "Failed to place bid.");
             }
         }
+    }
 
-        private void notifyUser(String message) {
-            JOptionPane.showMessageDialog(PlaceBidView.this, message, "Notification", JOptionPane.INFORMATION_MESSAGE);
-        }
+    public static void main(String[] args) {
+        // Example usage
+        User user = new User("bidder", "password", "bidder");
+        new PlaceBidView(user, 1).setVisible(true);
     }
 }

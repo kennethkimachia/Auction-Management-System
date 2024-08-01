@@ -6,10 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="746d9910-7052-4639-9a8a-dc68acbd9699" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/ItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/ItemDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/UserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/util/AuctionEndManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/util/AuctionEndManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/DashboardView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/DashboardView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/ItemDetailView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/ItemDetailView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/ListItemsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/ListItemsView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/LoginView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/LoginView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/PlaceBidView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/PlaceBidView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/RegisterItemView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/RegisterItemView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/RegistrationView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/RegistrationView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/ViewAuctionStatusView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/ViewAuctionStatusView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

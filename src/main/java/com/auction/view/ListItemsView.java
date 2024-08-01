@@ -1,8 +1,7 @@
-// src/main/java/com/auction/view/ListItemsView.java
 package main.java.com.auction.view;
 
+import main.java.com.auction.controller.ItemController;
 import main.java.com.auction.model.Item;
-import main.java.com.auction.model.ItemDAO;
 import main.java.com.auction.model.User;
 
 import javax.swing.*;
@@ -20,11 +19,11 @@ public class ListItemsView extends JFrame {
     private JButton searchButton;
     private JButton backButton;
     private User user;
-    private ItemDAO itemDAO;
+    private ItemController itemController;
 
     public ListItemsView(User user) {
         this.user = user;
-        this.itemDAO = new ItemDAO();
+        this.itemController = new ItemController();
         initializeUI();
         displayOngoingAuctions();
         displayClosedAuctions();
@@ -64,12 +63,12 @@ public class ListItemsView extends JFrame {
     }
 
     private void displayOngoingAuctions() {
-        List<Item> items = itemDAO.getOngoingAuctions();
+        List<Item> items = itemController.getOngoingAuctions();
         displayItems("Ongoing Auctions", items);
     }
 
     private void displayClosedAuctions() {
-        List<Item> items = itemDAO.getClosedAuctions();
+        List<Item> items = itemController.getClosedAuctions();
         displayItems("Closed Auctions", items);
     }
 
@@ -126,7 +125,7 @@ public class ListItemsView extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String query = searchField.getText().trim();
             String status = (String) statusComboBox.getSelectedItem();
-            List<Item> items = itemDAO.searchItems(query, status);
+            List<Item> items = itemController.searchItems(query, status);
             itemsPanel.removeAll();
             displayItems("Search Results", items);
             itemsPanel.revalidate();

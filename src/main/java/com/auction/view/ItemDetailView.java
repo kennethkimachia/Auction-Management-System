@@ -1,10 +1,9 @@
-// src/main/java/com/auction/view/ItemDetailView.java
 package main.java.com.auction.view;
 
+import main.java.com.auction.controller.BidController;
+import main.java.com.auction.controller.ItemController;
 import main.java.com.auction.model.Bid;
-import main.java.com.auction.model.BidDAO;
 import main.java.com.auction.model.Item;
-import main.java.com.auction.model.ItemDAO;
 import main.java.com.auction.model.User;
 
 import javax.swing.*;
@@ -14,16 +13,19 @@ import java.util.List;
 public class ItemDetailView extends JFrame {
     private JButton backButton;
     private User user;
+    private ItemController itemController;
+    private BidController bidController;
 
     public ItemDetailView(User user, int itemId) {
         this.user = user;
+        this.itemController = new ItemController();
+        this.bidController = new BidController();
         setTitle("Item Details");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        ItemDAO itemDAO = new ItemDAO();
-        Item item = itemDAO.getItemById(itemId);
+        Item item = itemController.getItemById(itemId);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 2));
@@ -62,8 +64,7 @@ public class ItemDetailView extends JFrame {
     }
 
     private void displayBidHistory(int itemId) {
-        BidDAO bidDAO = new BidDAO();
-        List<Bid> bids = bidDAO.getBidsByItemId(itemId);
+        List<Bid> bids = bidController.getBidsByItemId(itemId);
 
         JPanel bidHistoryPanel = new JPanel();
         bidHistoryPanel.setLayout(new BoxLayout(bidHistoryPanel, BoxLayout.Y_AXIS));
@@ -82,8 +83,7 @@ public class ItemDetailView extends JFrame {
     }
 
     private void displayWinnerInfo(int itemId) {
-        BidDAO bidDAO = new BidDAO();
-        List<Bid> bids = bidDAO.getBidsByItemId(itemId);
+        List<Bid> bids = bidController.getBidsByItemId(itemId);
         if (!bids.isEmpty()) {
             Bid highestBid = bids.get(bids.size() - 1);
             JPanel winnerPanel = new JPanel();
