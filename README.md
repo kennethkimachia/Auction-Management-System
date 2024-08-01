@@ -14,9 +14,7 @@
 - [Utilities](#utilities)
 - [Security](#security)
 - [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+
 
 ## Introduction
 The Auction Management System is a desktop application designed to facilitate the management of auctions. It provides features for user registration, item listing, bidding, and auction status tracking. The application follows the Model-View-Controller (MVC) architecture to ensure modularity and maintainability.
@@ -90,21 +88,21 @@ Auction-Management-System/
    git clone https://github.com/kennethkimachia/Auction-Management-System.git
    cd Auction-Management-System
 
-**2. Open in IntelliJ IDEA:**
+2. **Open in IntelliJ IDEA:**
 Open IntelliJ IDEA and select "Open" from the welcome screen.
 Navigate to the cloned repository and select it.
 
-**3. Add Libraries:**
+3. **Add Libraries:**
 Add the bcrypt and JavaMail API JAR files to your project's classpath.
 
-**4. Configure Database Connection:**
+4. **Configure Database Connection:**
 Update the DatabaseConnection.java file with your MySQL database credentials.
 
-**Database Setup:**
-**1. Create Database:**
+## database-setup
+1. **Create Database:**
 CREATE DATABASE auction_db;
 
-**2. Create Tables:**
+2. **Create Tables:**
 USE auction_db;
 
 CREATE TABLE users (
@@ -144,7 +142,7 @@ CREATE TABLE notifications (
     FOREIGN KEY (userId) REFERENCES users(id)
 );
 
-**Usage**
+## usage
 **Running the Application**
 In IntelliJ, right-click the Main class and select Run 'Main.main()'.
 
@@ -175,7 +173,7 @@ Bidders can place bids on items.
 
 View ongoing and closed auctions.
 
-**Controllers**
+## Controllers
 
 -LoginController: Handles user login.
 -PlaceBidController: Manages placing bids.
@@ -183,7 +181,7 @@ View ongoing and closed auctions.
 -UserController: Manages user data and interactions.
 -ViewAuctionStatusController: Retrieves auction status data.
 
-**Views**
+## Views
 
 -AddEditUserView: Interface for adding/editing users.
 -DashboardView: Main dashboard interface.
@@ -196,7 +194,7 @@ View ongoing and closed auctions.
 -RegistrationView: User registration interface.
 -ViewAuctionStatusView: Displays auction statuses.
 
-**Models**
+## models
 
 -Bid: Represents a bid.
 -BidDAO: Handles bid database operations.
@@ -208,17 +206,17 @@ View ongoing and closed auctions.
 -User: Represents a user.
 -UserDAO: Handles user database operations.
 
-**Utilities**
+## utilities
 
 -AuctionEndManager: Manages auction end scheduling and notifications.
 -EmailUtil: Utility for sending email notifications.
 
-**Security**
+##Security
 
 -Password Hashing: All user passwords are hashed using bcrypt for security.
 -Role-based Access Control: Access to features is controlled based on user roles (Admin/Bidder).
 
-**Future Enhancements**
+## future-enhancements 
 
 -Integrate payment gateways for transactions.
 -Implement real-time bid updates using WebSockets.
