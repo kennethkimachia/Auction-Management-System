@@ -26,7 +26,8 @@ public class ListItemsView extends JFrame {
         this.user = user;
         this.itemDAO = new ItemDAO();
         initializeUI();
-        displayItems(itemDAO.getAllItems());
+        displayOngoingAuctions();
+        displayClosedAuctions();
     }
 
     private void initializeUI() {
@@ -62,14 +63,31 @@ public class ListItemsView extends JFrame {
         add(new JScrollPane(itemsPanel), BorderLayout.CENTER);
     }
 
-    private void displayItems(List<Item> items) {
-        itemsPanel.removeAll();
+    private void displayOngoingAuctions() {
+        List<Item> items = itemDAO.getOngoingAuctions();
+        displayItems("Ongoing Auctions", items);
+    }
+
+    private void displayClosedAuctions() {
+        List<Item> items = itemDAO.getClosedAuctions();
+        displayItems("Closed Auctions", items);
+    }
+
+    private void displayItems(String title, List<Item> items) {
+        JPanel sectionPanel = new JPanel();
+        sectionPanel.setLayout(new BorderLayout());
+        sectionPanel.setBorder(BorderFactory.createTitledBorder(title));
+
+        JPanel itemListPanel = new JPanel();
+        itemListPanel.setLayout(new BoxLayout(itemListPanel, BoxLayout.Y_AXIS));
+
         for (Item item : items) {
             JPanel itemPanel = createItemPanel(item);
-            itemsPanel.add(itemPanel);
+            itemListPanel.add(itemPanel);
         }
-        itemsPanel.revalidate();
-        itemsPanel.repaint();
+
+        sectionPanel.add(new JScrollPane(itemListPanel), BorderLayout.CENTER);
+        itemsPanel.add(sectionPanel);
     }
 
     private JPanel createItemPanel(Item item) {
@@ -109,7 +127,10 @@ public class ListItemsView extends JFrame {
             String query = searchField.getText().trim();
             String status = (String) statusComboBox.getSelectedItem();
             List<Item> items = itemDAO.searchItems(query, status);
-            displayItems(items);
+            itemsPanel.removeAll();
+            displayItems("Search Results", items);
+            itemsPanel.revalidate();
+            itemsPanel.repaint();
         }
     }
 }

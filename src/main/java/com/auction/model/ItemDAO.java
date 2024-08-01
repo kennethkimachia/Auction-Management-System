@@ -142,4 +142,62 @@ public class ItemDAO {
 
         return items;
     }
+
+    public List<Item> getOngoingAuctions() {
+        String query = "SELECT * FROM items WHERE auctionStatus = 'Open'";
+        List<Item> items = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                double startingPrice = resultSet.getDouble("startingPrice");
+                String auctionStatus = resultSet.getString("auctionStatus");
+                String imagePath = resultSet.getString("imagePath");
+                Timestamp endTime = resultSet.getTimestamp("endTime");
+                String ownerUsername = resultSet.getString("ownerUsername");
+
+                Item item = new Item(name, description, startingPrice, auctionStatus, imagePath, endTime, ownerUsername);
+                item.setId(id);
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+    public List<Item> getClosedAuctions() {
+        String query = "SELECT * FROM items WHERE auctionStatus = 'Closed'";
+        List<Item> items = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                double startingPrice = resultSet.getDouble("startingPrice");
+                String auctionStatus = resultSet.getString("auctionStatus");
+                String imagePath = resultSet.getString("imagePath");
+                Timestamp endTime = resultSet.getTimestamp("endTime");
+                String ownerUsername = resultSet.getString("ownerUsername");
+
+                Item item = new Item(name, description, startingPrice, auctionStatus, imagePath, endTime, ownerUsername);
+                item.setId(id);
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
 }

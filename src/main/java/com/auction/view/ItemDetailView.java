@@ -1,12 +1,15 @@
 // src/main/java/com/auction/view/ItemDetailView.java
 package main.java.com.auction.view;
 
+import main.java.com.auction.model.Bid;
+import main.java.com.auction.model.BidDAO;
 import main.java.com.auction.model.Item;
 import main.java.com.auction.model.ItemDAO;
 import main.java.com.auction.model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class ItemDetailView extends JFrame {
     private JButton backButton;
@@ -51,5 +54,46 @@ public class ItemDetailView extends JFrame {
 
         add(panel, BorderLayout.CENTER);
         add(backButton, BorderLayout.SOUTH);
+
+        displayBidHistory(itemId);
+        if ("Closed".equals(item.getAuctionStatus())) {
+            displayWinnerInfo(itemId);
+        }
+    }
+
+    private void displayBidHistory(int itemId) {
+        BidDAO bidDAO = new BidDAO();
+        List<Bid> bids = bidDAO.getBidsByItemId(itemId);
+
+        JPanel bidHistoryPanel = new JPanel();
+        bidHistoryPanel.setLayout(new BoxLayout(bidHistoryPanel, BoxLayout.Y_AXIS));
+        bidHistoryPanel.setBorder(BorderFactory.createTitledBorder("Bid History"));
+
+        for (Bid bid : bids) {
+            JPanel bidPanel = new JPanel();
+            bidPanel.setLayout(new GridLayout(1, 3));
+            bidPanel.add(new JLabel("Bidder: " + bid.getBidderName()));
+            bidPanel.add(new JLabel("Bid Amount: $" + bid.getBidAmount()));
+            bidPanel.add(new JLabel("Bid Time: " + bid.getBidTime().toString()));
+            bidHistoryPanel.add(bidPanel);
+        }
+
+        add(new JScrollPane(bidHistoryPanel), BorderLayout.EAST);
+    }
+
+    private void displayWinnerInfo(int itemId) {
+        BidDAO bidDAO = new BidDAO();
+        List<Bid> bids = bidDAO.getBidsByItemId(itemId);
+        if (!bids.isEmpty()) {
+            Bid highestBid = bids.get(bids.size() - 1);
+            JPanel winnerPanel = new JPanel();
+            winnerPanel.setLayout(new GridLayout(1, 2));
+            winnerPanel.setBorder(BorderFactory.createTitledBorder("Winner"));
+
+            winnerPanel.add(new JLabel("Winner: " + highestBid.getBidderName()));
+            winnerPanel.add(new JLabel("Winning Bid: $" + highestBid.getBidAmount()));
+
+            add(winnerPanel, BorderLayout.WEST);
+        }
     }
 }
