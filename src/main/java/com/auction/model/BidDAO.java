@@ -1,3 +1,4 @@
+
 package main.java.com.auction.model;
 
 import java.sql.*;
@@ -5,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BidDAO {
+    private NotificationDAO notificationDAO = new NotificationDAO();
+
     public boolean placeBid(Bid bid) {
         String query = "INSERT INTO bids (itemId, bidderName, bidAmount) VALUES (?, ?, ?)";
 
@@ -14,7 +17,12 @@ public class BidDAO {
             preparedStatement.setString(2, bid.getBidderName());
             preparedStatement.setDouble(3, bid.getBidAmount());
             int result = preparedStatement.executeUpdate();
-            return result > 0;
+
+            if (result > 0) {
+                notifyItemOwner(bid.getItemId(), bid.getBidderName(), bid.getBidAmount());
+                notifyOutbidUsers(bid.getItemId(), bid.getBidAmount());
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,5 +72,42 @@ public class BidDAO {
         }
 
         return bids;
+    }
+
+    private void notifyItemOwner(int itemId, String bidderName, double bidAmount) {
+        ItemDAO itemDAO = new ItemDAO();
+        Item item = itemDAO.getItemById(itemId);
+        UserDAO userDAO = new UserDAO();
+        User itemOwner = userDAO.getUserByUsername(item.getOwnerUsername());
+
+        if (itemOwner != null) {
+            String message = "Your item \"" + item.getName() + "\" received a new bid of $" + bidAmount + " from " + bidderName;
+            Notification notification = new Notification(itemOwner.getId(), message);
+            notificationDAO.addNotification(notification);
+        }
+    }
+
+    private void notifyOutbidUsers(int itemId, double newBidAmount) {
+        String query = "SELECT bidderName, bidAmount FROM bids WHERE itemId = ? AND bidAmount < ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, itemId);
+            preparedStatement.setDouble(2, newBidAmount);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String bidderName = resultSet.getString("bidderName");
+                // Notify the user that they have been outbid
+                UserDAO userDAO = new UserDAO();
+                User outbidUser = userDAO.getUserByUsername(bidderName);
+                if (outbidUser != null) {
+                    String message = "You have been outbid on item \"" + itemId + "\" with a bid of $" + newBidAmount;
+                    Notification notification = new Notification(outbidUser.getId(), message);
+                    notificationDAO.addNotification(notification);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

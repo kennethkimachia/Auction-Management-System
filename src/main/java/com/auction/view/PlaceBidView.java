@@ -68,12 +68,17 @@ public class PlaceBidView extends JFrame {
                 Bid bid = new Bid(itemId, bidderName, bidAmount);
                 if (bidDAO.placeBid(bid)) {
                     JOptionPane.showMessageDialog(PlaceBidView.this, "Bid placed successfully!");
+                    notifyUser("You have placed a bid of $" + bidAmount + " on item " + itemId);
                 } else {
                     JOptionPane.showMessageDialog(PlaceBidView.this, "Failed to place bid.");
                 }
             } else {
                 JOptionPane.showMessageDialog(PlaceBidView.this, "Bid amount must be higher than the current highest bid.");
             }
+        }
+
+        private void notifyUser(String message) {
+            JOptionPane.showMessageDialog(PlaceBidView.this, message, "Notification", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

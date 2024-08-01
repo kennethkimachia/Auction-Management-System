@@ -1,4 +1,7 @@
+// src/main/java/com/auction/model/Item.java
 package main.java.com.auction.model;
+
+import java.sql.Timestamp;
 
 public class Item {
     private int id;
@@ -7,13 +10,17 @@ public class Item {
     private double startingPrice;
     private String auctionStatus;
     private String imagePath;
+    private Timestamp endTime;
+    private String ownerUsername; // New field
 
-    public Item(String name, String description, double startingPrice, String auctionStatus, String imagePath) {
+    public Item(String name, String description, double startingPrice, String auctionStatus, String imagePath, Timestamp endTime, String ownerUsername) {
         this.name = name;
         this.description = description;
         this.startingPrice = startingPrice;
         this.auctionStatus = auctionStatus;
         this.imagePath = imagePath;
+        this.endTime = endTime;
+        this.ownerUsername = ownerUsername;
     }
 
     // Getters and setters
@@ -63,5 +70,21 @@ public class Item {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 }

@@ -7,43 +7,69 @@ import main.java.com.auction.model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class ListItemsView extends JFrame {
     private JPanel itemsPanel;
+    private JTextField searchField;
+    private JComboBox<String> statusComboBox;
+    private JButton searchButton;
     private JButton backButton;
     private User user;
+    private ItemDAO itemDAO;
 
     public ListItemsView(User user) {
         this.user = user;
+        this.itemDAO = new ItemDAO();
+        initializeUI();
+        displayItems(itemDAO.getAllItems());
+    }
+
+    private void initializeUI() {
         setTitle("List Items");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        itemsPanel = new JPanel();
-        itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout());
 
-        ItemDAO itemDAO = new ItemDAO();
-        List<Item> items = itemDAO.getAllItems();
+        searchField = new JTextField(20);
+        topPanel.add(searchField);
 
-        for (Item item : items) {
-            JPanel itemPanel = createItemPanel(item);
-            itemsPanel.add(itemPanel);
-        }
+        statusComboBox = new JComboBox<>(new String[]{"All", "Open", "Closed"});
+        topPanel.add(statusComboBox);
 
-        JScrollPane scrollPane = new JScrollPane(itemsPanel);
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(new SearchButtonListener());
+        topPanel.add(searchButton);
 
         backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             new DashboardView(user).setVisible(true);
             dispose();
         });
+        topPanel.add(backButton);
 
-        add(scrollPane, BorderLayout.CENTER);
-        add(backButton, BorderLayout.SOUTH);
+        add(topPanel, BorderLayout.NORTH);
+
+        itemsPanel = new JPanel();
+        itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
+        add(new JScrollPane(itemsPanel), BorderLayout.CENTER);
+    }
+
+    private void displayItems(List<Item> items) {
+        itemsPanel.removeAll();
+        for (Item item : items) {
+            JPanel itemPanel = createItemPanel(item);
+            itemsPanel.add(itemPanel);
+        }
+        itemsPanel.revalidate();
+        itemsPanel.repaint();
     }
 
     private JPanel createItemPanel(Item item) {
@@ -75,5 +101,15 @@ public class ListItemsView extends JFrame {
         itemPanel.add(infoPanel, BorderLayout.CENTER);
 
         return itemPanel;
+    }
+
+    private class SearchButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String query = searchField.getText().trim();
+            String status = (String) statusComboBox.getSelectedItem();
+            List<Item> items = itemDAO.searchItems(query, status);
+            displayItems(items);
+        }
     }
 }

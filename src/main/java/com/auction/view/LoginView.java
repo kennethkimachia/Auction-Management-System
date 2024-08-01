@@ -1,6 +1,8 @@
 // src/main/java/com/auction/view/LoginView.java
 package main.java.com.auction.view;
 
+import main.java.com.auction.model.Notification;
+import main.java.com.auction.model.NotificationDAO;
 import main.java.com.auction.model.User;
 import main.java.com.auction.model.UserDAO;
 
@@ -8,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class LoginView extends JFrame {
     private JTextField usernameField;
@@ -58,11 +61,25 @@ public class LoginView extends JFrame {
             User user = userDAO.loginUser(username, password);
             if (user != null) {
                 JOptionPane.showMessageDialog(LoginView.this, "Login successful!");
+                showNotifications(user);
                 new DashboardView(user).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(LoginView.this, "Invalid username or password.");
             }
+        }
+    }
+
+    private void showNotifications(User user) {
+        NotificationDAO notificationDAO = new NotificationDAO();
+        List<Notification> notifications = notificationDAO.getNotificationsByUserId(user.getId());
+        if (!notifications.isEmpty()) {
+            StringBuilder message = new StringBuilder("You have the following notifications:\n\n");
+            for (Notification notification : notifications) {
+                message.append(notification.getMessage()).append("\n");
+                notificationDAO.markNotificationAsRead(notification.getId());
+            }
+            JOptionPane.showMessageDialog(LoginView.this, message.toString(), "Notifications", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
