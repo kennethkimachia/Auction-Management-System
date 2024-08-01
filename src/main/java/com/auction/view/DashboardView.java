@@ -1,63 +1,72 @@
+// src/main/java/com/auction/view/DashboardView.java
 package main.java.com.auction.view;
+
+import main.java.com.auction.model.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DashboardView extends JFrame {
-    private JButton registerItemButton;
-    private JButton listItemsButton;
-    private JButton placeBidButton;
-    private JButton viewAuctionStatusButton;
-    private JButton logoutButton;
 
-    public DashboardView() {
-        setTitle("Auction Management System - Dashboard");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+    public class DashboardView extends JFrame {
+        private JButton registerItemButton;
+        private JButton listItemsButton;
+        private JButton placeBidButton;
+        private JButton viewAuctionStatusButton;
+        private JButton logoutButton;
+        private User user;
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 1));
+        public DashboardView(User user) {
+            this.user = user;
+            setTitle("Auction Management System - Dashboard");
+            setSize(400, 300);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
 
-        registerItemButton = new JButton("Register Item");
-        listItemsButton = new JButton("List Items");
-        placeBidButton = new JButton("Place Bid");
-        viewAuctionStatusButton = new JButton("View Auction Status");
-        logoutButton = new JButton("Logout");
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(5, 1));
 
-        registerItemButton.addActionListener(new DashboardButtonListener());
-        listItemsButton.addActionListener(new DashboardButtonListener());
-        placeBidButton.addActionListener(new DashboardButtonListener());
-        viewAuctionStatusButton.addActionListener(new DashboardButtonListener());
-        logoutButton.addActionListener(e -> {
-            new LoginView().setVisible(true);
-            dispose();
-        });
+            registerItemButton = new JButton("Register Item");
+            listItemsButton = new JButton("List Items");
+            placeBidButton = new JButton("Place Bid");
+            viewAuctionStatusButton = new JButton("View Auction Status");
+            logoutButton = new JButton("Logout");
 
-        panel.add(registerItemButton);
-        panel.add(listItemsButton);
-        panel.add(placeBidButton);
-        panel.add(viewAuctionStatusButton);
-        panel.add(logoutButton);
+            registerItemButton.addActionListener(new DashboardButtonListener());
+            listItemsButton.addActionListener(new DashboardButtonListener());
+            placeBidButton.addActionListener(new DashboardButtonListener());
+            viewAuctionStatusButton.addActionListener(new DashboardButtonListener());
+            logoutButton.addActionListener(e -> {
+                new LoginView().setVisible(true);
+                dispose();
+            });
 
-        add(panel);
-    }
-
-    private class DashboardButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JButton source = (JButton) e.getSource();
-            if (source == registerItemButton) {
-                new RegisterItemView().setVisible(true);
-            } else if (source == listItemsButton) {
-                new ListItemsView().setVisible(true);
-            } else if (source == placeBidButton) {
-                new PlaceBidView().setVisible(true);
-            } else if (source == viewAuctionStatusButton) {
-                new ViewAuctionStatusView().setVisible(true);
+            if (user.getRole().equals("admin")) {
+                panel.add(registerItemButton);
             }
-            dispose();
+            panel.add(listItemsButton);
+            panel.add(placeBidButton);
+            panel.add(viewAuctionStatusButton);
+            panel.add(logoutButton);
+
+            add(panel);
+        }
+
+        private class DashboardButtonListener implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton source = (JButton) e.getSource();
+                if (source == registerItemButton) {
+                    new RegisterItemView(user).setVisible(true);
+                } else if (source == listItemsButton) {
+                    new ListItemsView(user).setVisible(true);
+                } else if (source == placeBidButton) {
+                    new PlaceBidView(user).setVisible(true);
+                } else if (source == viewAuctionStatusButton) {
+                    new ViewAuctionStatusView(user).setVisible(true);
+                }
+                dispose();
+            }
         }
     }
-}

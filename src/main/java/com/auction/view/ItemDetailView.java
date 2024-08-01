@@ -3,14 +3,17 @@ package main.java.com.auction.view;
 
 import main.java.com.auction.model.Item;
 import main.java.com.auction.model.ItemDAO;
+import main.java.com.auction.model.User;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ItemDetailView extends JFrame {
     private JButton backButton;
+    private User user;
 
-    public ItemDetailView(int itemId) {
+    public ItemDetailView(User user, int itemId) {
+        this.user = user;
         setTitle("Item Details");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -42,7 +45,7 @@ public class ItemDetailView extends JFrame {
 
         backButton = new JButton("Back");
         backButton.addActionListener(e -> {
-            new ListItemsView().setVisible(true);
+            new ListItemsView(user).setVisible(true);
             dispose();
         });
 

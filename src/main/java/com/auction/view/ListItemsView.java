@@ -1,68 +1,79 @@
+// src/main/java/com/auction/view/ListItemsView.java
 package main.java.com.auction.view;
 
 import main.java.com.auction.model.Item;
 import main.java.com.auction.model.ItemDAO;
+import main.java.com.auction.model.User;
+
 import javax.swing.*;
-import javax.swing.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class ListItemsView extends JFrame {
-    private JTable itemsTable;
+    private JPanel itemsPanel;
     private JButton backButton;
+    private User user;
 
-    public ListItemsView() {
+    public ListItemsView(User user) {
+        this.user = user;
         setTitle("List Items");
-        setSize(400, 300);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        // Add components to list items here
+
+        itemsPanel = new JPanel();
+        itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
 
         ItemDAO itemDAO = new ItemDAO();
         List<Item> items = itemDAO.getAllItems();
-        String[] columnNames = {"ID", "Name", "Description", "Starting Price", "Auction Status", "Image"};
-        Object[][] data = new Object[items.size()][6];
 
-        for (int i = 0; i < items.size(); i++) {
-            Item item = items.get(i);
-            data[i][0] = item.getId();
-            data[i][1] = item.getName();
-            data[i][2] = item.getDescription();
-            data[i][3] = item.getStartingPrice();
-            data[i][4] = item.getAuctionStatus();
-            data[i][5] = new ImageIcon(new ImageIcon(item.getImagePath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        for (Item item : items) {
+            JPanel itemPanel = createItemPanel(item);
+            itemsPanel.add(itemPanel);
         }
 
-        itemsTable = new JTable(data, columnNames) {
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return column == 5 ? ImageIcon.class : Object.class;
-            }
-        };
-
-        itemsTable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int row = itemsTable.getSelectedRow();
-                    int itemId = (int) itemsTable.getValueAt(row, 0);
-                    new ItemDetailView(itemId).setVisible(true);
-                    dispose();
-                }
-            }
-        });
-
-        JScrollPane scrollPane = new JScrollPane(itemsTable);
+        JScrollPane scrollPane = new JScrollPane(itemsPanel);
 
         backButton = new JButton("Back");
         backButton.addActionListener(e -> {
-            new DashboardView().setVisible(true);
+            new DashboardView(user).setVisible(true);
             dispose();
         });
 
         add(scrollPane, BorderLayout.CENTER);
         add(backButton, BorderLayout.SOUTH);
     }
-    }
 
+    private JPanel createItemPanel(Item item) {
+        JPanel itemPanel = new JPanel();
+        itemPanel.setLayout(new BorderLayout());
+        itemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel nameLabel = new JLabel("<html><a href=''>" + item.getName() + "</a></html>");
+        nameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        nameLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new ItemDetailView(user, item.getId()).setVisible(true);
+                dispose();
+            }
+        });
+
+        JLabel descriptionLabel = new JLabel("<html>" + item.getDescription() + "</html>");
+        JLabel priceLabel = new JLabel("Starting Price: $" + item.getStartingPrice());
+        JLabel statusLabel = new JLabel("Auction Status: " + item.getAuctionStatus());
+
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.add(nameLabel);
+        infoPanel.add(descriptionLabel);
+        infoPanel.add(priceLabel);
+        infoPanel.add(statusLabel);
+
+        itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        return itemPanel;
+    }
+}

@@ -1,14 +1,19 @@
+// src/main/java/com/auction/model/User.java
 package main.java.com.auction.model;
 
 public class User {
     private int id;
     private String username;
     private String password;
+    private String role;
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
+
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -33,4 +38,11 @@ public class User {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

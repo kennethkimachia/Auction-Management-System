@@ -1,4 +1,7 @@
+// src/main/java/com/auction/view/LoginView.java
 package main.java.com.auction.view;
+
+import main.java.com.auction.model.User;
 import main.java.com.auction.model.UserDAO;
 
 import javax.swing.*;
@@ -14,43 +17,26 @@ public class LoginView extends JFrame {
 
     public LoginView() {
         setTitle("Login");
-        setSize(350, 200); // Consistent size with the registration form
+        setSize(300, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel with a grid layout and padding
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.setBackground(new Color(230, 240, 255)); // Consistent background color
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 2));
 
-        // Adding styled components to the panel
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setForeground(new Color(50, 50, 150)); // Dark blue text
+        panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
-        usernameField.setForeground(new Color(80, 80, 80)); // Dark gray text
-        usernameField.setBackground(new Color(255, 255, 255)); // White background
-        panel.add(usernameLabel);
         panel.add(usernameField);
 
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setForeground(new Color(50, 50, 150)); // Dark blue text
+        panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
-        passwordField.setForeground(new Color(80, 80, 80)); // Dark gray text
-        passwordField.setBackground(new Color(255, 255, 255)); // White background
-        panel.add(passwordLabel);
         panel.add(passwordField);
 
-        // Login button with custom styling
         loginButton = new JButton("Login");
-        loginButton.setBackground(new Color(70, 130, 180)); // Steel blue
-        loginButton.setForeground(Color.WHITE); // White text
         loginButton.addActionListener(new LoginButtonListener());
         panel.add(loginButton);
 
-        // Register button redirects to the registration form
         registerButton = new JButton("Register");
-        registerButton.setBackground(new Color(230, 140, 140)); // Consistent red button
-        registerButton.setForeground(Color.WHITE); // White text
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -69,9 +55,10 @@ public class LoginView extends JFrame {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
             UserDAO userDAO = new UserDAO();
-            if (userDAO.loginUser(username, password) != null) {
+            User user = userDAO.loginUser(username, password);
+            if (user != null) {
                 JOptionPane.showMessageDialog(LoginView.this, "Login successful!");
-                new DashboardView().setVisible(true);
+                new DashboardView(user).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(LoginView.this, "Invalid username or password.");
