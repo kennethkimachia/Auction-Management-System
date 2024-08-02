@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="746d9910-7052-4639-9a8a-dc68acbd9699" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/ItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/ItemDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/util/AuctionEndManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/util/AuctionEndManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/ItemDetailView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/ItemDetailView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/view/ListItemsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/view/ListItemsView.java" afterDir="false" />
-    </list>
+    <list default="true" id="746d9910-7052-4639-9a8a-dc68acbd9699" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
