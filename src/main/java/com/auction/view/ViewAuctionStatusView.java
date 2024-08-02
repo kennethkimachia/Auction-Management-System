@@ -1,77 +1,73 @@
+// src/main/java/com/auction/view/ViewAuctionStatusView.java
 package main.java.com.auction.view;
 
-import main.java.com.auction.controller.ViewAuctionStatusController;
-import main.java.com.auction.model.Item;
-import main.java.com.auction.model.User;
+import main.java.com.auction.model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class ViewAuctionStatusView extends JFrame {
+    private JTextField itemIdField;
+    private JButton viewStatusButton;
+    private JButton backButton;
+    private JPanel statusPanel;
     private User user;
-    private JPanel ongoingAuctionsPanel;
-    private JPanel closedAuctionsPanel;
-    private ViewAuctionStatusController viewAuctionStatusController;
 
     public ViewAuctionStatusView(User user) {
         this.user = user;
-        this.viewAuctionStatusController = new ViewAuctionStatusController();
-        initializeUI();
-        displayOngoingAuctions();
-        displayClosedAuctions();
-    }
-
-    private void initializeUI() {
-        setTitle("Auction Status");
-        setSize(800, 600);
+        setTitle("View Auction Status");
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new GridLayout(3, 2));
 
-        ongoingAuctionsPanel = new JPanel();
-        ongoingAuctionsPanel.setLayout(new BoxLayout(ongoingAuctionsPanel, BoxLayout.Y_AXIS));
-        panel.add(new JScrollPane(ongoingAuctionsPanel), BorderLayout.CENTER);
+        panel.add(new JLabel("Item ID:"));
+        itemIdField = new JTextField();
+        panel.add(itemIdField);
 
-        closedAuctionsPanel = new JPanel();
-        closedAuctionsPanel.setLayout(new BoxLayout(closedAuctionsPanel, BoxLayout.Y_AXIS));
-        panel.add(new JScrollPane(closedAuctionsPanel), BorderLayout.CENTER);
+        viewStatusButton = new JButton("View Status");
+        viewStatusButton.addActionListener(e -> viewAuctionStatus());
+        panel.add(viewStatusButton);
 
-        JButton backButton = new JButton("Back");
+        backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             new DashboardView(user).setVisible(true);
             dispose();
         });
         panel.add(backButton);
 
-        add(panel);
+        add(panel, BorderLayout.NORTH);
+
+        statusPanel = new JPanel();
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+        add(new JScrollPane(statusPanel), BorderLayout.CENTER);
     }
 
-    private void displayOngoingAuctions() {
-        List<Item> ongoingAuctions = viewAuctionStatusController.getOngoingAuctions();
-        displayItems("Ongoing Auctions", ongoingAuctions, ongoingAuctionsPanel);
-    }
+    private void viewAuctionStatus() {
+        int itemId = Integer.parseInt(itemIdField.getText());
+        ItemDAO itemDAO = new ItemDAO();
+        BidDAO bidDAO = new BidDAO();
 
-    private void displayClosedAuctions() {
-        List<Item> closedAuctions = viewAuctionStatusController.getClosedAuctions();
-        displayItems("Closed Auctions", closedAuctions, closedAuctionsPanel);
-    }
+        Item item = itemDAO.getItemById(itemId);
+        List<Bid> bids = bidDAO.getBidsByItemId(itemId);
+        double highestBid = bidDAO.getHighestBid(itemId);
 
-    private void displayItems(String title, List<Item> items, JPanel panel) {
-        for (Item item : items) {
-            JPanel itemPanel = new JPanel();
-            itemPanel.setLayout(new GridLayout(1, 2));
-            itemPanel.add(new JLabel("Item: " + item.getName()));
-            itemPanel.add(new JLabel("Status: " + item.getAuctionStatus()));
-            panel.add(itemPanel);
+        statusPanel.removeAll();
+        statusPanel.add(new JLabel("Item ID: " + item.getId()));
+        statusPanel.add(new JLabel("Name: " + item.getName()));
+        statusPanel.add(new JLabel("Description: " + item.getDescription()));
+        statusPanel.add(new JLabel("Starting Price: $" + item.getStartingPrice()));
+        statusPanel.add(new JLabel("Auction Status: " + item.getAuctionStatus()));
+        statusPanel.add(new JLabel("Highest Bid: $" + highestBid));
+
+        for (Bid bid : bids) {
+            statusPanel.add(new JLabel("Bidder: " + bid.getBidderName() + ", Amount: $" + bid.getBidAmount() + ", Time: " + bid.getBidTime()));
         }
-    }
 
-    public static void main(String[] args) {
-        // Example usage
-        User user = new User("admin", "admin", "admin");
-        new ViewAuctionStatusView(user).setVisible(true);
+        statusPanel.revalidate();
+        statusPanel.repaint();
     }
 }
