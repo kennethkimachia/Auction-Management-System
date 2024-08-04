@@ -51,6 +51,12 @@ import java.awt.event.ActionListener;
             panel.add(logoutButton);
 
             add(panel);
+            if ("admin".equals(user.getRole())) {
+                JButton userManagementButton = new JButton("Manage Users");
+                userManagementButton.addActionListener(e -> new AdminUserManagementView().setVisible(true));
+                panel.add(userManagementButton);
+            }
+
         }
 
         private class DashboardButtonListener implements ActionListener {
